@@ -15,10 +15,10 @@ type UserService interface {
 }
 
 type userService struct {
-    userRepo *repositories.UserRepository
+    userRepo repositories.UserRepository
 }
 
-func NewUserService(userRepo *repositories.UserRepository) UserService {
+func NewUserService(userRepo repositories.UserRepository) UserService {
     return &userService{userRepo}
 }
 
@@ -63,7 +63,7 @@ func (s *userService) LoginUser(ctx context.Context, email, password string) (st
         return "", errors.New("invalid email or password")
     }
 
-    token, err := auth.GenerateJWT(user.ID)
+    token, err := auth.GenerateJWT(user.ID, user.Email)
     if err != nil {
         return "", err
     }

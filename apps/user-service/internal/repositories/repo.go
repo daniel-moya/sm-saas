@@ -22,7 +22,7 @@ func NewUserRepository(db *sql.DB) UserRepository {
 
 func (r *userRepository) CreateUser(ctx context.Context, user *models.User) error {
     query := `INSERT INTO users (email, password, created_at, updated_at)
-              VALUES ($1, $2, $3, $4, $5) RETURNING id`
+              VALUES ($1, $2, $3, $4) RETURNING id`
     return r.db.QueryRowContext(
         ctx,
         query,

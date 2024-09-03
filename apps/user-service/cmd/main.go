@@ -23,7 +23,7 @@ func main() {
 
     // Initialize repository and service
     userRepo := repositories.NewUserRepository(db)
-    userService := services.NewUserService(&userRepo)
+    userService := services.NewUserService(userRepo)
 
     // Start gRPC server
     grpc.StartGRPCServer(userService, cfg.APPPort)

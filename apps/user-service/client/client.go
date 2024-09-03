@@ -20,6 +20,22 @@ func main() {
 
     client := proto.NewUserServiceClient(conn)
 
+    registerRequest := &proto.RegisterRequest{
+        Email: "test@example.com",
+        Password: "password123",
+    }
+
+    ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+    defer cancel()
+
+
+    response, err := client.Register(ctx, registerRequest)
+    if err != nil {
+        log.Fatalf("could not register: %v", err)
+    }
+
+    fmt.Printf("Register successful, received token: %s\n", response.Email)
+
     // Prepare the login request
     loginRequest := &proto.LoginRequest{
         Email:    "test@example.com",
@@ -27,14 +43,14 @@ func main() {
     }
 
     // Set a timeout context
-    ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+    ctx, cancel = context.WithTimeout(context.Background(), time.Second*5)
     defer cancel()
 
     // Call the Login method
-    response, err := client.Login(ctx, loginRequest)
-    if err != nil {
-        log.Fatalf("could not log in: %v", err)
+    resp2, err2 := client.Login(ctx, loginRequest)
+    if err2 != nil {
+        log.Fatalf("could not log in: %v", err2)
     }
 
-    fmt.Printf("Login successful, received token: %s\n", response.Token)
+    fmt.Printf("Login successful, received token: %s\n", resp2.Token)
 }

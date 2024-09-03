@@ -1,15 +1,19 @@
 services:
   db:
+    container_name: 'users_db'
     image: postgres
     restart: always
     ports:
       - '5432:5432'
+    environment:
+      - POSTGRES_PASSWORD=secret
     volumes:
       - db_data:/var/lib/postgresql/data
+      - ./postgres:/docker-entrypoint-initdb.d
     networks:
       - app-network
 
-  user-service:
+  users:
     build:
       context: .
       dockerfile: Dockerfile 
@@ -19,6 +23,18 @@ services:
       - '50051:50051'
     depends_on:
       - db
+    networks:
+      - app-network
+    volumes:
+      - ./:/app
+
+  client:
+    container_name: 'app_client'
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    depends_on:
+      - users
     networks:
       - app-network
 
