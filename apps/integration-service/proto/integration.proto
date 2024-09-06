@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package integration;
+
+enum Platform {
+    option allow_alias = true;
+    PLATFORM_UNSPECIFIED = 0;
+    PLATFORM_X = 1;
+    PLATFORM_TWITTER = 1;
+    PLATFORM_INSTAGRAM = 2;
+    PLATFORM_FACEBOOK = 3;
+    PLATFORM_TIKTOK = 4;
+}
+
+service IntegrationService {
+    rpc LinkSocialAccount (LinkSocialAccountRequest) returns (LinkSocialAccountResponse);
+    rpc UnlinkSocialAccount (UnlinkSocialAccountRequest) returns (UnlinkSocialAccountResponse);
+}
+
+message LinkSocialAccountRequest {
+    string userId = 1;
+    Platform platform = 2;
+    string accessToken = 3;
+    string secret = 4;
+}
+
+message LinkSocialAccountResponse {
+    string message = 1;
+}
+
+message UnlinkSocialAccountRequest {
+    string userId = 1;
+    string socialMediaPlatform = 2;
+}
+
+message UnlinkSocialAccountResponse {
+    string message = 1;
+}

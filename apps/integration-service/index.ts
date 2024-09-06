@@ -1,1 +1,4 @@
-console.log("Integration Service")
+import App from './src/app';
+
+const app = new App();
+app.start()

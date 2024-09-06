@@ -1,0 +1,11 @@
+services:
+  app:
+    container_name: 'integration-service'
+    build:
+      context: .
+      dockerfile: Dockerfile 
+    volumes:
+      - ./.:/app/
+    ports:
+      - '50053:50053'
+  
