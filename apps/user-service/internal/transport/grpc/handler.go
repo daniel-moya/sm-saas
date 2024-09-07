@@ -45,3 +45,18 @@ func (h *UserHandler) Login(ctx context.Context, req *pb.LoginRequest) (*pb.Logi
 
     return &pb.LoginResponse{Token: token}, nil
 }
+
+func (h *UserHandler) Delete(ctx context.Context, req *pb.DeleteRequest) (*pb.DeleteResponse, error) {
+    err := h.service.Delete(
+        ctx,
+        req.Id,
+    )
+
+    if err != nil {
+        return nil, err
+    }
+
+    return &pb.DeleteResponse{Message: "deleted" }, nil
+}
+
+

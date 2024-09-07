@@ -12,6 +12,7 @@ import (
 type UserService interface {
     RegisterUser(ctx context.Context, email, password string) (*models.User, error)
     LoginUser(ctx context.Context, email, password string) (string, error)
+    Delete(ctx context.Context, id int64) (error)
 }
 
 type userService struct {
@@ -69,4 +70,13 @@ func (s *userService) LoginUser(ctx context.Context, email, password string) (st
     }
 
     return token, nil
+}
+
+
+func (s *userService) Delete(ctx context.Context, id int64) (error) {
+    // if err != nil {
+    //     return err
+    // }
+
+    return nil
 }
