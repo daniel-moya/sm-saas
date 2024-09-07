@@ -6,6 +6,18 @@
 
 /* eslint-disable */
 import { BinaryReader, BinaryWriter } from "@bufbuild/protobuf/wire";
+import {
+  type CallOptions,
+  ChannelCredentials,
+  Client,
+  type ClientOptions,
+  type ClientUnaryCall,
+  type handleUnaryCall,
+  makeGenericClientConstructor,
+  Metadata,
+  type ServiceError,
+  type UntypedServiceImplementation,
+} from "@grpc/grpc-js";
 
 export const protobufPackage = "integration";
 
@@ -378,37 +390,77 @@ export const UnlinkSocialAccountResponse = {
   },
 };
 
-export interface IntegrationService {
-  LinkSocialAccount(request: LinkSocialAccountRequest): Promise<LinkSocialAccountResponse>;
-  UnlinkSocialAccount(request: UnlinkSocialAccountRequest): Promise<UnlinkSocialAccountResponse>;
+export type IntegrationServiceService = typeof IntegrationServiceService;
+export const IntegrationServiceService = {
+  linkSocialAccount: {
+    path: "/integration.IntegrationService/LinkSocialAccount",
+    requestStream: false,
+    responseStream: false,
+    requestSerialize: (value: LinkSocialAccountRequest) => Buffer.from(LinkSocialAccountRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer) => LinkSocialAccountRequest.decode(value),
+    responseSerialize: (value: LinkSocialAccountResponse) =>
+      Buffer.from(LinkSocialAccountResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer) => LinkSocialAccountResponse.decode(value),
+  },
+  unlinkSocialAccount: {
+    path: "/integration.IntegrationService/UnlinkSocialAccount",
+    requestStream: false,
+    responseStream: false,
+    requestSerialize: (value: UnlinkSocialAccountRequest) =>
+      Buffer.from(UnlinkSocialAccountRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer) => UnlinkSocialAccountRequest.decode(value),
+    responseSerialize: (value: UnlinkSocialAccountResponse) =>
+      Buffer.from(UnlinkSocialAccountResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer) => UnlinkSocialAccountResponse.decode(value),
+  },
+} as const;
+
+export interface IntegrationServiceServer extends UntypedServiceImplementation {
+  linkSocialAccount: handleUnaryCall<LinkSocialAccountRequest, LinkSocialAccountResponse>;
+  unlinkSocialAccount: handleUnaryCall<UnlinkSocialAccountRequest, UnlinkSocialAccountResponse>;
 }
 
-export const IntegrationServiceServiceName = "integration.IntegrationService";
-export class IntegrationServiceClientImpl implements IntegrationService {
-  private readonly rpc: Rpc;
-  private readonly service: string;
-  constructor(rpc: Rpc, opts?: { service?: string }) {
-    this.service = opts?.service || IntegrationServiceServiceName;
-    this.rpc = rpc;
-    this.LinkSocialAccount = this.LinkSocialAccount.bind(this);
-    this.UnlinkSocialAccount = this.UnlinkSocialAccount.bind(this);
-  }
-  LinkSocialAccount(request: LinkSocialAccountRequest): Promise<LinkSocialAccountResponse> {
-    const data = LinkSocialAccountRequest.encode(request).finish();
-    const promise = this.rpc.request(this.service, "LinkSocialAccount", data);
-    return promise.then((data) => LinkSocialAccountResponse.decode(new BinaryReader(data)));
-  }
-
-  UnlinkSocialAccount(request: UnlinkSocialAccountRequest): Promise<UnlinkSocialAccountResponse> {
-    const data = UnlinkSocialAccountRequest.encode(request).finish();
-    const promise = this.rpc.request(this.service, "UnlinkSocialAccount", data);
-    return promise.then((data) => UnlinkSocialAccountResponse.decode(new BinaryReader(data)));
-  }
+export interface IntegrationServiceClient extends Client {
+  linkSocialAccount(
+    request: LinkSocialAccountRequest,
+    callback: (error: ServiceError | null, response: LinkSocialAccountResponse) => void,
+  ): ClientUnaryCall;
+  linkSocialAccount(
+    request: LinkSocialAccountRequest,
+    metadata: Metadata,
+    callback: (error: ServiceError | null, response: LinkSocialAccountResponse) => void,
+  ): ClientUnaryCall;
+  linkSocialAccount(
+    request: LinkSocialAccountRequest,
+    metadata: Metadata,
+    options: Partial<CallOptions>,
+    callback: (error: ServiceError | null, response: LinkSocialAccountResponse) => void,
+  ): ClientUnaryCall;
+  unlinkSocialAccount(
+    request: UnlinkSocialAccountRequest,
+    callback: (error: ServiceError | null, response: UnlinkSocialAccountResponse) => void,
+  ): ClientUnaryCall;
+  unlinkSocialAccount(
+    request: UnlinkSocialAccountRequest,
+    metadata: Metadata,
+    callback: (error: ServiceError | null, response: UnlinkSocialAccountResponse) => void,
+  ): ClientUnaryCall;
+  unlinkSocialAccount(
+    request: UnlinkSocialAccountRequest,
+    metadata: Metadata,
+    options: Partial<CallOptions>,
+    callback: (error: ServiceError | null, response: UnlinkSocialAccountResponse) => void,
+  ): ClientUnaryCall;
 }
 
-interface Rpc {
-  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
-}
+export const IntegrationServiceClient = makeGenericClientConstructor(
+  IntegrationServiceService,
+  "integration.IntegrationService",
+) as unknown as {
+  new (address: string, credentials: ChannelCredentials, options?: Partial<ClientOptions>): IntegrationServiceClient;
+  service: typeof IntegrationServiceService;
+  serviceName: string;
+};
 
 type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
 

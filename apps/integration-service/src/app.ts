@@ -1,22 +1,42 @@
 import * as grpc from '@grpc/grpc-js';
-import { IntegrationService } from './proto/integration';
+import {
+    IntegrationServiceService,
+    LinkSocialAccountRequest,
+    LinkSocialAccountResponse,
+    UnlinkSocialAccountRequest,
+    UnlinkSocialAccountResponse
+} from './proto/integration';
+
+// Implement the actual service methods
+const integrationServiceImpl = {
+    linkSocialAccount: (
+        call: grpc.ServerUnaryCall<LinkSocialAccountRequest, LinkSocialAccountResponse>,
+        callback: grpc.sendUnaryData<LinkSocialAccountResponse>,
+    ) => {
+        const response = LinkSocialAccountResponse.create({ message: "Linked" });
+        callback(null, response);
+    },
+
+    unlinkSocialAccount: (
+        call: grpc.ServerUnaryCall<UnlinkSocialAccountRequest, UnlinkSocialAccountResponse>,
+        callback: grpc.sendUnaryData<UnlinkSocialAccountResponse>,
+    ) => {
+        const response = UnlinkSocialAccountResponse.create({ message: "Unlinked" });
+        callback(null, response);
+    }
+};
+
 
 class App {
     start() {
-        // Add the implemented service to the server
-        //server.addService(IntegrationServiceProto.IntegrationService.service, {
-        //    StoreUserTokens: storeUserTokens,
-        //});
-
-        const PORT = process.env.PORT || '50051';
-
         const server = new grpc.Server();
+        server.addService(IntegrationServiceService, integrationServiceImpl);
 
         server.bindAsync(
             '127.0.0.1:50051',
             grpc.ServerCredentials.createInsecure(),
             () => {
-                server.start();
+                //server.start();
             }
         );
     }
